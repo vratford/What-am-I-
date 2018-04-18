@@ -23,23 +23,28 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 
         self.navigationItem.title = "Take a picture ----->"
         imagePicker.delegate = self
-        imagePicker.sourceType = .camera
+        imagePicker.sourceType = .camera //  or .photolibrary, .savedPhotoAlbum
         imagePicker.allowsEditing = true
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         
         if let userPickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+  
             cameraImage.image = userPickedImage
+            
             
             guard let ciimage = CIImage(image: userPickedImage) else {
                 fatalError("Could not convert UIIamage to CIImage")
             }
             
+            imagePicker.dismiss(animated: true, completion: nil)
+
+            
             detect(image: ciimage)
+            
         }
         
-        imagePicker.dismiss(animated: true, completion: nil)
         
         
     }
@@ -55,12 +60,13 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 fatalError("Model failed to process image")
             }
             
-            //            print(results)
+            //            print(results)  // send to console to see what string was returned
             
             if let firstResult = results.first {
                 
             
             self.myTopGuess.text = "\(firstResult.identifier) @ \(round(firstResult.confidence*1000) / 10)%"
+            self.navigationItem.title = "Take another picture ----->"
         
             }
             
