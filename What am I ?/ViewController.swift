@@ -12,6 +12,17 @@ import Vision
 
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
+    var cameraSource : Bool = true
+    
+    
+    @IBAction func imageSource(_ sender: UISwitch) {
+        if sender.isOn {
+            cameraSource = true
+        } else {
+            cameraSource = false
+        }
+    }
+    
     @IBOutlet weak var cameraImage: UIImageView!
     
     @IBOutlet weak var myTopGuess: UITextField!
@@ -21,10 +32,18 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.navigationItem.title = "Take a picture ----->"
+        self.navigationItem.title = "Image to Classify ?"
+        
         imagePicker.delegate = self
-        imagePicker.sourceType = .camera //  or .photolibrary, .savedPhotoAlbum
+        
         imagePicker.allowsEditing = true
+        if cameraSource == true {
+            imagePicker.sourceType = .camera
+        } else {
+            imagePicker.sourceType = .photoLibrary
+        }
+        print("cameraSource = \(cameraSource)")
+    
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
@@ -33,13 +52,14 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
   
             cameraImage.image = userPickedImage
             
+            imagePicker.dismiss(animated: true, completion: nil)
             
+            UIImageWriteToSavedPhotosAlbum(userPickedImage, nil, nil, nil) // Save to camera roll
+            
+
             guard let ciimage = CIImage(image: userPickedImage) else {
                 fatalError("Could not convert UIIamage to CIImage")
             }
-            
-            imagePicker.dismiss(animated: true, completion: nil)
-
             
             detect(image: ciimage)
             
@@ -66,7 +86,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 
             
             self.myTopGuess.text = "\(firstResult.identifier) @ \(round(firstResult.confidence*1000) / 10)%"
-            self.navigationItem.title = "Take another picture ----->"
+            self.navigationItem.title = "Classify another picture ----->"
         
             }
             
@@ -87,6 +107,17 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     @IBAction func cameraTapped(_ sender: UIBarButtonItem) {
         
             present(imagePicker, animated: true, completion: nil)
+        
+        imagePicker.delegate = self
+        
+        imagePicker.allowsEditing = true
+        if cameraSource == true {
+            imagePicker.sourceType = .camera
+        } else {
+            imagePicker.sourceType = .photoLibrary
+        }
+        print("cameraSource = \(cameraSource)")
+        
     }
     
 }
