@@ -23,6 +23,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         }
     }
     
+    
     @IBOutlet weak var cameraImage: UIImageView!
     
     @IBOutlet weak var myTopGuess: UITextField!
@@ -32,7 +33,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.navigationItem.title = "Image to Classify ?"
+        self.navigationItem.title = "What Am I ?"
         
         imagePicker.delegate = self
         
