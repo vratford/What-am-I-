@@ -1,127 +1,324 @@
+///  ViewController.swift
+
+//  ItemIdentifier
+
 //
-//  ViewController.swift
-//  What am I ?
-//
-//  Created by Vincent Ratford on 4/17/18.
-//  Copyright © 2018 Vincent Ratford. All rights reserved.
+
+//  Created by Theophilos Aravanis on 8/19/17.
+
+// Adapted by Vin Ratford April 20, 2018
+
+//  Copyright © 2017 Theophilos Aravanis. All rights reserved.
+
 //
 
 import UIKit
+
 import CoreML
+
 import Vision
 
-class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    
-    var cameraSource : Bool = true
+class ViewController: UIViewController , UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     
-    @IBAction func imageSource(_ sender: UISwitch) {
-        if sender.isOn {
-            cameraSource = true
-        } else {
-            cameraSource = false
-        }
-    }
     
+    typealias modelResults = (conf: Float, ident: String)
     
-    @IBOutlet weak var cameraImage: UIImageView!
-    
-    @IBOutlet weak var myTopGuess: UITextField!
-    
-    let imagePicker = UIImagePickerController()
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        self.navigationItem.title = "What Am I ?"
+    enum modelClasses {
         
-        imagePicker.delegate = self
+        case Inceptionv3
         
-        imagePicker.allowsEditing = true
-        if cameraSource == true {
-            imagePicker.sourceType = .camera
-        } else {
-            imagePicker.sourceType = .photoLibrary
-        }
-        print("cameraSource = \(cameraSource)")
-    
-    }
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        case Resnet50
         
-        if let userPickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-  
-            cameraImage.image = userPickedImage
-            
-            imagePicker.dismiss(animated: true, completion: nil)
-            
-            UIImageWriteToSavedPhotosAlbum(userPickedImage, nil, nil, nil) // Save to camera roll
-            
-
-            guard let ciimage = CIImage(image: userPickedImage) else {
-                fatalError("Could not convert UIIamage to CIImage")
-            }
-            
-            detect(image: ciimage)
-            
-        }
+        case SqueezeNet
         
+        case VGG16
         
+        case MobileNet
+        
+        case GoogLeNetPlaces
         
     }
     
-    func detect(image: CIImage) {
-        
-        guard let model = try? VNCoreMLModel(for: Inceptionv3().model) else {
-            fatalError("Loading CoreML Model Failed.")
-        }
-        
-        let request = VNCoreMLRequest(model: model) { (request, error) in
-            guard let results = request.results as? [VNClassificationObservation] else {
-                fatalError("Model failed to process image")
-            }
-            
-            //            print(results)  // send to console to see what string was returned
-            
-            if let firstResult = results.first {
-                
-            
-            self.myTopGuess.text = "\(firstResult.identifier) @ \(round(firstResult.confidence*1000) / 10)%"
-            self.navigationItem.title = "Classify another picture ----->"
-        
-            } else {
-                self.navigationItem.title = "Try Again  ----->"
-            }
-            
-        }
+    var modelArray = [modelClasses.Inceptionv3, modelClasses.GoogLeNetPlaces, modelClasses.MobileNet, modelClasses.Resnet50, modelClasses.SqueezeNet, modelClasses.VGG16]
+    
+    var aRequest:VNRequest?
+    
+    func theHandler(image:CIImage, aRequest:VNRequest) {
         
         let handler = VNImageRequestHandler(ciImage: image)
         
         do {
-            try handler.perform([request])
+            
+            try handler.perform([aRequest])
+            
         }
+            
         catch {
+            
             print(error)
+            
         }
-        
-        
-    }
-
-    @IBAction func cameraTapped(_ sender: UIBarButtonItem) {
-        
-            present(imagePicker, animated: true, completion: nil)
-        
-        imagePicker.delegate = self
-        
-        imagePicker.allowsEditing = true
-        if cameraSource == true {
-            imagePicker.sourceType = .camera
-        } else {
-            imagePicker.sourceType = .photoLibrary
-        }
-        print("cameraSource = \(cameraSource)")
         
     }
     
-}
+    func getAModel(image: CIImage) {
+        
+        var confidenseIdentiferArray = [modelResults]()
+        
+        var cofidenceAndIdentifier : modelResults = (conf:0.0,ident:"")  // a tuple that will contain the cofidence level and the idenity
+        
+        for model in modelArray {
+            
+            switch model {
+                
+            case .Inceptionv3:
+                
+                guard  let model = try? VNCoreMLModel(for: Inceptionv3() .model) else {
+                    
+                    fatalError("Loading CoreML Model Failed.")
+                    
+                } //End of Guard
+                
+                let aRequest = VNCoreMLRequest(model: model) { (request, error) in
+                    
+                    guard let results = request.results as? [VNClassificationObservation] else {
+                        
+                        fatalError("Model Failed to Process Image")
+                        
+                    } //End of Guard
+                    
+                    if let firstResult = results.first {
+                        
+                        cofidenceAndIdentifier.conf = firstResult.confidence
+                        
+                        cofidenceAndIdentifier.ident = firstResult.identifier
+                        
+                        confidenseIdentiferArray.append((cofidenceAndIdentifier))
+                        
+                    }// End of If let
+                    
+                }// End of Clouser
+                
+                theHandler(image: image, aRequest: aRequest)
+                
+            case .Resnet50:
+                
+                guard  let model = try? VNCoreMLModel(for: Resnet50() .model) else {
+                    
+                    fatalError("Loading CoreML Model Failed.")
+                    
+                }// End of Guard
+                
+                let aRequest = VNCoreMLRequest(model: model) { (request, error) in
+                    
+                    guard let results = request.results as? [VNClassificationObservation] else {
+                        
+                        fatalError("Model Failed to Process Image")
+                        
+                    } //End of Guard
+                    
+                    if let firstResult = results.first {
+                        
+                        cofidenceAndIdentifier.conf = firstResult.confidence
+                        
+                        cofidenceAndIdentifier.ident = firstResult.identifier
+                        
+                        confidenseIdentiferArray.append((cofidenceAndIdentifier))
+                        
+                    }// End of If let
+                    
+                }// End of Clouser
+                
+                theHandler(image: image, aRequest: aRequest)
+                
+            case .GoogLeNetPlaces:
+                
+                guard  let model = try? VNCoreMLModel(for: GoogLeNetPlaces() .model) else {
+                    
+                    fatalError("Loading CoreML Model Failed.")
+                    
+                } //End of Guard
+                
+                let aRequest = VNCoreMLRequest(model: model) { (request, error) in
+                    
+                    guard let results = request.results as? [VNClassificationObservation] else {
+                        
+                        fatalError("Model Failed to Process Image")
+                        
+                    } //End of Guard
+                    
+                    if let firstResult = results.first {
+                        
+                        cofidenceAndIdentifier.conf = firstResult.confidence
+                        
+                        cofidenceAndIdentifier.ident = firstResult.identifier
+                        
+                        confidenseIdentiferArray.append((cofidenceAndIdentifier))
+                        
+                    }// End of If let
+                    
+                }// End of Clouser
+                
+                theHandler(image: image, aRequest: aRequest)
+                
+            case .MobileNet:
+                
+                guard  let model = try? VNCoreMLModel(for: MobileNet() .model) else {
+                    
+                    fatalError("Loading CoreML Model Failed.")
+                    
+                } //End of Guard
+                
+                let aRequest = VNCoreMLRequest(model: model) { (request, error) in
+                    
+                    guard let results = request.results as? [VNClassificationObservation] else {
+                        
+                        fatalError("Model Failed to Process Image")
+                        
+                    } //End of Guard
+                    
+                    if let firstResult = results.first {
+                        
+                        cofidenceAndIdentifier.conf = firstResult.confidence
+                        
+                        cofidenceAndIdentifier.ident = firstResult.identifier
+                        
+                        confidenseIdentiferArray.append((cofidenceAndIdentifier))
+                        
+                    }// End of If let
+                    
+                }// End of Clouser
+                
+                theHandler(image: image, aRequest: aRequest)
+                
+            case .SqueezeNet:
+                
+                guard  let model = try? VNCoreMLModel(for: SqueezeNet() .model) else {
+                    
+                    fatalError("Loading CoreML Model Failed.")
+                    
+                } //End of Guard
+                
+                let aRequest = VNCoreMLRequest(model: model) { (request, error) in
+                    
+                    guard let results = request.results as? [VNClassificationObservation] else {
+                        
+                        fatalError("Model Failed to Process Image")
+                        
+                    } //End of Guard
+                    
+                    if let firstResult = results.first {
+                        
+                        cofidenceAndIdentifier.conf = firstResult.confidence
+                        
+                        cofidenceAndIdentifier.ident = firstResult.identifier
+                        
+                        confidenseIdentiferArray.append((cofidenceAndIdentifier))
+                        
+                    }// End of If let
+                    
+                }// End of Clouser
+                
+                theHandler(image: image, aRequest: aRequest)
+                
+            case .VGG16:
+                
+                guard  let model = try? VNCoreMLModel(for: VGG16() .model) else {
+                    
+                    fatalError("Loading CoreML Model Failed.")
+                    
+                } //End of Guard
+                
+                let aRequest = VNCoreMLRequest(model: model) { (request, error) in
+                    
+                    guard let results = request.results as? [VNClassificationObservation] else {
+                        
+                        fatalError("Model Failed to Process Image")
+                        
+                    } //End of Guard
+                    
+                    if let firstResult = results.first {
+                        
+                        cofidenceAndIdentifier.conf = firstResult.confidence
+                        
+                        cofidenceAndIdentifier.ident = firstResult.identifier
+                        
+                        confidenseIdentiferArray.append((cofidenceAndIdentifier))
+                        
+                    }// End of If let
+                    
+                }// End of Clouser
+                
+                theHandler(image: image, aRequest: aRequest)
+                
+            }// End of Switch
+            
+        }//End of For Loop
+        
+        confidenseIdentiferArray = confidenseIdentiferArray.sorted(by: {$0.conf  > $1.conf})
+        
+        
+        
+        cofidenceAndIdentifier = confidenseIdentiferArray[0]
+        
+        navigationItem.title = "There is a \(Int(cofidenceAndIdentifier.conf * 100) )% chance that this is a \(cofidenceAndIdentifier.ident)"
+        
+        // print("element o in the array contains \(confidenseIdentiferArray[0])")
+        
+    }// End of Method
+    
+    
+    
+    @IBOutlet weak var screenImage: UIImageView!
+    
+    let imagePicker = UIImagePickerController ()
+    
+    override func viewDidLoad() {
+        
+        super.viewDidLoad()
+        
+        imagePicker.delegate = self
+        
+        imagePicker.sourceType = .camera
+        
+        imagePicker.allowsEditing = false
+        
+    }
+    
+    
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        
+        if let userPickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            
+            screenImage.image = userPickedImage
+            
+            guard  let  ciImage = CIImage(image: userPickedImage) else {
+                
+                fatalError("Could not pnvert to CIImage")
+                
+            }
+            
+            //            detectImage(image: ciImage)
+            
+            getAModel(image: ciImage)
+            
+        }
+        
+        imagePicker.dismiss(animated: true, completion: nil)
+        
+    }
+    
+    
+    
+    @IBAction func camaraTapped(_ sender: UIBarButtonItem) {
+        
+        present(imagePicker, animated: true, completion: nil)
+        
+        
+        
+    }
+    
+}  // End of Class ViewController
 
