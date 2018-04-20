@@ -20,7 +20,7 @@ import Vision
 
 class ViewController: UIViewController , UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    
+    var cameraSource : Bool = true
     
     typealias modelResults = (conf: Float, ident: String)
     
@@ -248,7 +248,7 @@ class ViewController: UIViewController , UIImagePickerControllerDelegate, UINavi
                         
                     }// End of If let
                     
-                }// End of Clouser
+                }// End of Closer
                 
                 theHandler(image: image, aRequest: aRequest)
                 
@@ -262,15 +262,22 @@ class ViewController: UIViewController , UIImagePickerControllerDelegate, UINavi
         
         cofidenceAndIdentifier = confidenseIdentiferArray[0]
         
-        navigationItem.title = "There is a \(Int(cofidenceAndIdentifier.conf * 100) )% chance that this is a \(cofidenceAndIdentifier.ident)"
+        self.myTopGuess.text = "\(Int(cofidenceAndIdentifier.conf * 100) )% accuracy this is a \(cofidenceAndIdentifier.ident)"
         
         // print("element o in the array contains \(confidenseIdentiferArray[0])")
         
     }// End of Method
     
+    @IBAction func imageSource(_ sender: UISwitch) {
+        if sender.isOn {
+            cameraSource = true
+        } else {
+            cameraSource = false
+        }
+    }
+    @IBOutlet weak var cameraImage: UIImageView!
     
-    
-    @IBOutlet weak var screenImage: UIImageView!
+    @IBOutlet weak var myTopGuess: UITextField!
     
     let imagePicker = UIImagePickerController ()
     
@@ -280,9 +287,16 @@ class ViewController: UIViewController , UIImagePickerControllerDelegate, UINavi
         
         imagePicker.delegate = self
         
-        imagePicker.sourceType = .camera
+        self.navigationItem.title = "What Am I ?"
+
         
-        imagePicker.allowsEditing = false
+        imagePicker.allowsEditing = true
+        if cameraSource == true {
+            imagePicker.sourceType = .camera
+        } else {
+            imagePicker.sourceType = .photoLibrary
+        }
+        print("cameraSource = \(cameraSource)")
         
     }
     
@@ -292,7 +306,9 @@ class ViewController: UIViewController , UIImagePickerControllerDelegate, UINavi
         
         if let userPickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
             
-            screenImage.image = userPickedImage
+            cameraImage.image = userPickedImage
+            
+            UIImageWriteToSavedPhotosAlbum(userPickedImage, nil, nil, nil) // Save to camera roll
             
             guard  let  ciImage = CIImage(image: userPickedImage) else {
                 
@@ -312,12 +328,19 @@ class ViewController: UIViewController , UIImagePickerControllerDelegate, UINavi
     
     
     
-    @IBAction func camaraTapped(_ sender: UIBarButtonItem) {
+    @IBAction func cameraTapped(_ sender: UIBarButtonItem) {
         
         present(imagePicker, animated: true, completion: nil)
         
+        imagePicker.delegate = self
         
-        
+        imagePicker.allowsEditing = true
+        if cameraSource == true {
+            imagePicker.sourceType = .camera
+        } else {
+            imagePicker.sourceType = .photoLibrary
+        }
+        print("cameraSource = \(cameraSource)")
     }
     
 }  // End of Class ViewController
