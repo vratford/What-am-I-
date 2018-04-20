@@ -89,6 +89,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             self.myTopGuess.text = "\(firstResult.identifier) @ \(round(firstResult.confidence*1000) / 10)%"
             self.navigationItem.title = "Classify another picture ----->"
         
+            } else {
+                self.navigationItem.title = "Try Again  ----->"
             }
             
         }
