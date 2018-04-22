@@ -7,11 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		518396F8208AA24500088722 /* SqueezeNet.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 518396F3208AA24400088722 /* SqueezeNet.mlmodel */; };
-		518396F9208AA24500088722 /* MobileNet.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 518396F4208AA24400088722 /* MobileNet.mlmodel */; };
-		518396FA208AA24500088722 /* GoogLeNetPlaces.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 518396F5208AA24400088722 /* GoogLeNetPlaces.mlmodel */; };
 		51839706208AA61E00088722 /* Resnet50.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 51839705208AA61D00088722 /* Resnet50.mlmodel */; };
 		51839708208AA66100088722 /* VGG16.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 51839707208AA66100088722 /* VGG16.mlmodel */; };
+		51A3E90D208D156700C2332A /* GoogLeNetPlaces.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 51A3E90C208D156700C2332A /* GoogLeNetPlaces.mlmodel */; };
+		51A3E90F208D157900C2332A /* MobileNet.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 51A3E90E208D157900C2332A /* MobileNet.mlmodel */; };
+		51A3E911208D158800C2332A /* SqueezeNet.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 51A3E910208D158800C2332A /* SqueezeNet.mlmodel */; };
 		51D0DA0E20867FAD000AF94E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D0DA0D20867FAD000AF94E /* AppDelegate.swift */; };
 		51D0DA1020867FAD000AF94E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D0DA0F20867FAD000AF94E /* ViewController.swift */; };
 		51D0DA1320867FAD000AF94E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 51D0DA1120867FAD000AF94E /* Main.storyboard */; };
@@ -21,11 +21,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		518396F3208AA24400088722 /* SqueezeNet.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = SqueezeNet.mlmodel; path = ../../../../Downloads/SqueezeNet.mlmodel; sourceTree = "<group>"; };
-		518396F4208AA24400088722 /* MobileNet.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = MobileNet.mlmodel; path = ../../../../Downloads/MobileNet.mlmodel; sourceTree = "<group>"; };
-		518396F5208AA24400088722 /* GoogLeNetPlaces.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = GoogLeNetPlaces.mlmodel; path = ../../../../Downloads/GoogLeNetPlaces.mlmodel; sourceTree = "<group>"; };
 		51839705208AA61D00088722 /* Resnet50.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = Resnet50.mlmodel; sourceTree = "<group>"; };
 		51839707208AA66100088722 /* VGG16.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = VGG16.mlmodel; sourceTree = "<group>"; };
+		51A3E90C208D156700C2332A /* GoogLeNetPlaces.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = GoogLeNetPlaces.mlmodel; sourceTree = "<group>"; };
+		51A3E90E208D157900C2332A /* MobileNet.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MobileNet.mlmodel; sourceTree = "<group>"; };
+		51A3E910208D158800C2332A /* SqueezeNet.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = SqueezeNet.mlmodel; sourceTree = "<group>"; };
 		51D0DA0A20867FAD000AF94E /* What am I ?.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "What am I ?.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		51D0DA0D20867FAD000AF94E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		51D0DA0F20867FAD000AF94E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -68,10 +68,10 @@
 			children = (
 				51D0DA0D20867FAD000AF94E /* AppDelegate.swift */,
 				51D0DA0F20867FAD000AF94E /* ViewController.swift */,
-				518396F5208AA24400088722 /* GoogLeNetPlaces.mlmodel */,
-				518396F4208AA24400088722 /* MobileNet.mlmodel */,
+				51A3E90C208D156700C2332A /* GoogLeNetPlaces.mlmodel */,
+				51A3E90E208D157900C2332A /* MobileNet.mlmodel */,
 				51839705208AA61D00088722 /* Resnet50.mlmodel */,
-				518396F3208AA24400088722 /* SqueezeNet.mlmodel */,
+				51A3E910208D158800C2332A /* SqueezeNet.mlmodel */,
 				51839707208AA66100088722 /* VGG16.mlmodel */,
 				51D0DA1F20868143000AF94E /* Inceptionv3.mlmodel */,
 				51D0DA1120867FAD000AF94E /* Main.storyboard */,
@@ -153,14 +153,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51A3E90F208D157900C2332A /* MobileNet.mlmodel in Sources */,
 				51839708208AA66100088722 /* VGG16.mlmodel in Sources */,
 				51839706208AA61E00088722 /* Resnet50.mlmodel in Sources */,
+				51A3E911208D158800C2332A /* SqueezeNet.mlmodel in Sources */,
 				51D0DA1020867FAD000AF94E /* ViewController.swift in Sources */,
+				51A3E90D208D156700C2332A /* GoogLeNetPlaces.mlmodel in Sources */,
 				51D0DA2020868143000AF94E /* Inceptionv3.mlmodel in Sources */,
-				518396F9208AA24500088722 /* MobileNet.mlmodel in Sources */,
-				518396F8208AA24500088722 /* SqueezeNet.mlmodel in Sources */,
 				51D0DA0E20867FAD000AF94E /* AppDelegate.swift in Sources */,
-				518396FA208AA24500088722 /* GoogLeNetPlaces.mlmodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
