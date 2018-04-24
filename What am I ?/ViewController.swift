@@ -18,7 +18,10 @@ import CoreML
 
 import Vision
 
+import SVProgressHUD
+
 class ViewController: UIViewController , UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
     
     var cameraSource : Bool = true
     
@@ -46,6 +49,7 @@ class ViewController: UIViewController , UIImagePickerControllerDelegate, UINavi
     
     func theHandler(image:CIImage, aRequest:VNRequest) {
         
+        
         let handler = VNImageRequestHandler(ciImage: image)
         
         do {
@@ -63,6 +67,7 @@ class ViewController: UIViewController , UIImagePickerControllerDelegate, UINavi
     }
     
     func getAModel(image: CIImage) {
+        
         
         var confidenseIdentiferArray = [modelResults]()
         
@@ -218,7 +223,7 @@ class ViewController: UIViewController , UIImagePickerControllerDelegate, UINavi
                         
                     }// End of If let
                     
-                }// End of Clouser
+                }// End of Closer
                 
                 theHandler(image: image, aRequest: aRequest)
                 
@@ -262,7 +267,10 @@ class ViewController: UIViewController , UIImagePickerControllerDelegate, UINavi
         
         cofidenceAndIdentifier = confidenseIdentiferArray[0]
         
+        
         self.myTopGuess.text = "\(Int(cofidenceAndIdentifier.conf * 100) )% accuracy this is a \(cofidenceAndIdentifier.ident)"
+        
+        SVProgressHUD.dismiss()
         
         // print("element o in the array contains \(confidenseIdentiferArray[0])")
         
@@ -285,6 +293,7 @@ class ViewController: UIViewController , UIImagePickerControllerDelegate, UINavi
         
         super.viewDidLoad()
         
+        
         imagePicker.delegate = self
         
         self.navigationItem.title = "What Am I ?"
@@ -304,21 +313,30 @@ class ViewController: UIViewController , UIImagePickerControllerDelegate, UINavi
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         
+        SVProgressHUD.show()
+        
         if let userPickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            
+            
             
             cameraImage.image = userPickedImage
             
-            UIImageWriteToSavedPhotosAlbum(userPickedImage, nil, nil, nil) // Save to camera roll
+//            UIImageWriteToSavedPhotosAlbum(userPickedImage, nil, nil, nil) // Save to camera roll
             
+           
             guard  let  ciImage = CIImage(image: userPickedImage) else {
-                
-                fatalError("Could not pnvert to CIImage")
+              
+                fatalError("Could not convert to CIImage")
                 
             }
             
             //            detectImage(image: ciImage)
             
+            
+            
             getAModel(image: ciImage)
+            
+   
             
         }
         
@@ -332,6 +350,7 @@ class ViewController: UIViewController , UIImagePickerControllerDelegate, UINavi
         
         present(imagePicker, animated: true, completion: nil)
         
+        
         imagePicker.delegate = self
         
         imagePicker.allowsEditing = true
@@ -341,6 +360,7 @@ class ViewController: UIViewController , UIImagePickerControllerDelegate, UINavi
             imagePicker.sourceType = .photoLibrary
         }
         print("cameraSource = \(cameraSource)")
+        
     }
     
 }  // End of Class ViewController
